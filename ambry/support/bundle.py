@@ -2,8 +2,7 @@
 Example bundle that builds a single partition with a table of random numbers
 '''
 
-from  ambry.bundle import BuildBundle
- 
+from ambry.bundle.build import BuildBundle
 
 
 class Bundle(BuildBundle):

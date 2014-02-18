@@ -9,6 +9,7 @@
 
 
 import os
+from ambry.bundle.build import BuildBundle
 from ..identity import Identity
 from ..orm import Dataset
 
@@ -240,7 +241,6 @@ class SourceTree(object):
 
     def _dir_list(self, datasets=None, key='vid'):
         from ..identity import LocationRef, Identity
-        from ..bundle import BuildBundle
 
         if datasets is None:
             datasets = {}

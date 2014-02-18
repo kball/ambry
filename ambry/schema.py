@@ -91,8 +91,8 @@ class Schema(object):
     @classmethod
     def get_table_from_database(cls, db, name_or_id, session=None, d_vid=None):
         from ambry.orm import Table
-        
-        import sqlalchemy.orm.exc
+
+        from sqlalchemy.orm.exc import NoResultFound
         from sqlalchemy.sql import or_, and_
         
         if not name_or_id:
@@ -101,12 +101,20 @@ class Schema(object):
         
         try: 
             if d_vid:
-                return (session.query(Table).filter(
-                         and_(Table.d_vid ==  d_vid,   
-                         or_(Table.vid==name_or_id,
-                             Table.id_==name_or_id,
-                             Table.name==name_or_id))
-                        ).one())
+
+                try:
+                    # This is the normal case with a name and d_vid
+                    return (session.query(Table).filter(
+                             and_(Table.d_vid ==  d_vid,
+                             or_(Table.vid==name_or_id,
+                                 Table.id_==name_or_id,
+                                 Table.name==name_or_id))
+                            ).one())
+                except NoResultFound as e:
+                    pass
+
+                # This is the case for a WarehouseBundle, with  name_or_id being a vid
+                return (session.query(Table).filter(Table.vid == name_or_id).one())
                 
             else:
     
@@ -116,16 +124,23 @@ class Schema(object):
                              Table.name==name_or_id)
                         ).one())
                 
-        except sqlalchemy.orm.exc.NoResultFound as e:
-            raise sqlalchemy.orm.exc.NoResultFound("No table for name_or_id: {}".format(name_or_id))
+        except NoResultFound as e:
+
+            raise NoResultFound("No table {} for name_or_id".format(name_or_id))
 
 
-    def table(self, name_or_id):
+    def table(self, name_or_id, d_vid=None):
         '''Return an orm.Table object, from either the id or name'''
+        from sqlalchemy.orm.exc import NoResultFound
 
-        return Schema.get_table_from_database(self.bundle.database, name_or_id, session = self.bundle.database.session, 
-                                              d_vid = self.bundle.identity.vid)
-     
+        try:
+            return Schema.get_table_from_database(self.bundle.database,
+                                                  name_or_id,
+                                                  session = self.bundle.database.session,
+                                                  d_vid = d_vid if d_vid else self.bundle.identity.vid)
+        except NoResultFound as e:
+            raise NoResultFound("{} in {}".format(e.message, self.bundle.database.dsn))
+
 
     def add_table(self, name,  **kwargs):
         '''Add a table to the schema'''

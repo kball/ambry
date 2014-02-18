@@ -396,6 +396,7 @@ class RelationalBundleDatabaseMixin(object):
         ds.vname = ident.vname
         ds.fqname = ident.fqname
         ds.cache_key = ident.cache_key
+        ds.state = Dataset.STATE.SELF
 
         try:
             ds.creator = self.bundle.config.about.author

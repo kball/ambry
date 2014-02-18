@@ -5,6 +5,7 @@ Revised BSD License, included in this distribution as LICENSE.txt
 """
 
 from . import RepositoryInterface, RepositoryException  #@UnresolvedImport
+from ambry.bundle.build import BuildBundle
 from ambry.dbexceptions import ConfigurationError
 
 from sh import git
@@ -357,8 +358,7 @@ class GitRepository(RepositoryInterface):
     
     @bundle.setter
     def bundle(self, b):
-        from ambry.bundle import BuildBundle
-        
+
         self._bundle = b
     
         if not isinstance(b, BuildBundle):

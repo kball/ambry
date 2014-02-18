@@ -322,6 +322,7 @@ class Name(object):
         return self.name
 
 
+
 class PartialPartitionName(Name):
     '''For specifying a PartitionName within the context of a bundle. 
     '''

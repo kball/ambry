@@ -146,7 +146,7 @@ class SqliteAttachmentMixin(object):
 class SqliteDatabase(RelationalDatabase):
 
     EXTENSION = '.db'
-    SCHEMA_VERSION = 16
+    SCHEMA_VERSION = 17
 
     def __init__(self, dbname, memory = False,  **kwargs):   
         ''' '''
@@ -663,6 +663,22 @@ def _on_connect_update_sqlite_schema(conn):
             except:
                 pass
 
+        if version < 17:
+
+            try:
+                conn.execute('ALTER TABLE datasets ADD COLUMN d_state VARCHAR(40);')
+            except:
+                pass
+
+            try:
+                conn.execute('ALTER TABLE datasets ADD COLUMN d_group VARCHAR(200);')
+            except:
+                pass
+
+            try:
+                conn.execute('ALTER TABLE datasets ADD COLUMN d_tag VARCHAR(40);')
+            except:
+                pass
 
     conn.execute('PRAGMA user_version = {}'.format(SqliteDatabase.SCHEMA_VERSION))
 

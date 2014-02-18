@@ -210,6 +210,9 @@ class Dataset(Base):
     LOCATION.REMOTE =  LocationRef.LOCATION.REMOTE
     LOCATION.UPSTREAM = LocationRef.LOCATION.UPSTREAM
 
+    STATE = Constant()
+    STATE.SELF = 'self'
+    STATE.INSTALLED = 'installed'
 
     vid = SAColumn('d_vid',String(20), primary_key=True)
     location = SAColumn('d_location', String(5), primary_key=True, default=LOCATION.LIBRARY)
@@ -227,7 +230,9 @@ class Dataset(Base):
     creator = SAColumn('d_creator',String(200), nullable=False)
     revision = SAColumn('d_revision',Integer, nullable=False)
     version = SAColumn('d_version',String(20), nullable=False)
-
+    state = SAColumn('d_state', String(40))
+    group = SAColumn('d_group', String(200))
+    tag = SAColumn('d_tag', String(40))
 
     data = SAColumn('d_data', MutationDict.as_mutable(JSONEncodedObj))
 
@@ -264,7 +269,10 @@ class Dataset(Base):
         self.bspace = kwargs.get("bspace", None)
         self.creator = kwargs.get("creator",None) 
         self.revision = kwargs.get("revision",None) 
-        self.version = kwargs.get("version",None) 
+        self.version = kwargs.get("version",None)
+        self.state = kwargs.get("state", None)
+        self.group = kwargs.get("group", None)
+        self.tag = kwargs.get("tag", None)
 
         if not self.id_:
             dn = DatasetNumber(None, self.revision )
@@ -312,7 +320,11 @@ class Dataset(Base):
                 'bspace': self.bspace,
                 'creator':self.creator, 
                 'revision':self.revision, 
-                'version':self.version, 
+                'version':self.version,
+                'state': self.state,
+                'group': self.group,
+                'tag': self.tag,
+
                 }
         
 def _clean_flag( in_flag):

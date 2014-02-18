@@ -6,9 +6,9 @@ Created on Jul 13, 2012
 Base class bundle for the US Census
 
 '''
-from  ambry.bundle import BuildBundle
-import os.path  
+import os.path
 import yaml
+from ambry.bundle.build import BuildBundle
 
 
 class UsCensusBundle(BuildBundle):

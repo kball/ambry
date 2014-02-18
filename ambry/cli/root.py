@@ -2,6 +2,7 @@
 Copyright (c) 2013 Clarinova. This file is licensed under the terms of the
 Revised BSD License, included in this distribution as LICENSE.txt
 """
+from ambry.bundle.build import BuildBundle
 
 from ..cli import prt,err, _find, plain_prt, _print_bundle_list, _print_bundle_entry
 
@@ -157,7 +158,6 @@ def root_find(args, l, st, rc):
     from ..source.repository.git import GitRepository
     from ..library.files import Files
     from ..identity import Identity
-    from ..bundle.bundle import BuildBundle
 
     if args.plain:
         fields = ['vid']

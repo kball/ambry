@@ -208,7 +208,7 @@ class PartitionBase(PartitionInterface):
             if table_spec is None:
                 return None
             
-        return self.bundle.schema.table(table_spec)
+        return self.bundle.schema.table(table_spec, str(self.identity.as_dataset().on))
 
 
     def unset_database(self):

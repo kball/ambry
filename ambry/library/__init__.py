@@ -320,6 +320,10 @@ class Library(object):
         self.cache.remove(bundle.identity.cache_key, propagate=True)
 
 
+    def install_table(self, table_vid, installed_name):
+        '''Mark a table as installed by setting its installation name'''
+        self.database.install_table(table_vid, installed_name)
+
     ##
     ## Retreiving
     ##
@@ -950,7 +954,7 @@ class Library(object):
 
     @property
     def info(self):
-        return """
+        x =  """
 ------ Library {name} ------
 Database: {database}
 Cache:    {cache}
@@ -958,10 +962,33 @@ Remote:   {remote}
         """.format(name=self.name, database=self.database.dsn,
                    cache=self.cache, remote=self.upstream if self.upstream else '')
 
+        this = self
+
+        class _info(str):
+
+            @property
+            def list(self):
+                dsids = this.list(locations=None, key='fqname').values()
+
+                idents  =  sorted( [ ident for ds in dsids for ident in (ds.partitions.values()  if ds.partitions else [] ) ] +
+                                   [ ds for  ds in dsids],
+                                   key=lambda ident: ident.fqname  )
+
+
+                return "\n".join(
+                    "{:16s} {:6s} {:s} ".format(i.vid, i.locations, i.vname)
+                    for i in idents
+                )
+
+
+        return _info(x)
+
     @property
     def dict(self):
         return dict(name=str(self.name),
                     database=str(self.database.dsn),
                     cache=str(self.cache),
                     remote=str(self.upstream) if self.upstream else None)
+
+
 

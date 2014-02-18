@@ -103,11 +103,7 @@ def warehouse_info(args, w,config):
     
     prt("Warehouse Info")
     prt("Name:     {}",args.name)
-    prt("Class:    {}",w.__class__)
-    prt("Database: {}",w.database.dsn)
-    prt("WLibrary: {}",w.wlibrary.database.dsn)
-    prt("ELibrary: {}",w.elibrary.database.dsn)
-
+    prt(w.info)
 
 def warehouse_install(args, w,config):
     from ..library import new_library

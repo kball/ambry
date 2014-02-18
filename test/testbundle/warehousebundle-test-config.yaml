@@ -1,0 +1,26 @@
+# Configuration for a library that is backed by a remote library
+
+defaults:
+  creator: eric@sandiegodata.org
+  source: test.org
+
+library:
+    default:
+      filesystem: default
+      database: default
+      upstream:
+          options: [compress]
+          prefix: library-test
+          bucket: devtest.sandiegodata.org
+          account: devtest.sandiegodata.org
+
+
+database:
+    default:
+        dbname: '{root}/library.db'
+        driver: sqlite
+
+filesystem:
+  root: /tmp/test-whb
+  default: '{root}/cache/default'
+  adhoc: '{root}/cache/adhoc'

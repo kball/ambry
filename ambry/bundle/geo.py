@@ -3,10 +3,10 @@
 Copyright (c) 2014 Clarinova. This file is licensed under the terms of the
 Revised BSD License, included in this distribution as LICENSE.txt
 """
+from ambry.bundle.build import BuildBundle
 
 __author__ = 'eric'
 
-from bundle import BuildBundle
 
 class GeoBuildBundle(BuildBundle):
 

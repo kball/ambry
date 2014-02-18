@@ -4,6 +4,7 @@ Created on Jun 22, 2012
 @author: eric
 """
 import unittest
+from ambry.bundle.build import BuildBundle
 from  testbundle.bundle import Bundle
 from ambry.identity import *
 from test_base import  TestBase
@@ -25,7 +26,7 @@ class Test(TestBase):
 
     def test_db_bundle(self):
         
-        from ambry.bundle import BuildBundle, DbBundle
+        from ambry.bundle import DbBundle
         
         b = BuildBundle(self.bundle_dir)
         b.clean()

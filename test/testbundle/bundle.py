@@ -4,9 +4,8 @@ Created on Jun 10, 2012
 @author: eric
 """
 
-
-from  ambry.bundle import BuildBundle
 import petl.fluent as petl  # @UnresolvedImport
+from ambry.bundle.build import BuildBundle
 
 
 class Bundle(BuildBundle):

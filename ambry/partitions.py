@@ -1,4 +1,4 @@
-"""Access classess and identity for partitions. 
+"""Access classess and identity for partitions.
 
 Copyright (c) 2013 Clarinova. This file is licensed under the terms of the
 Revised BSD License, included in this distribution as LICENSE.txt
@@ -147,33 +147,31 @@ class Partitions(object):
             id_ = id_.identity.id_
      
         s = self.bundle.database.session
-        
+
         q = (s
              .query(OrmPartition)
              .filter(or_(
-                         OrmPartition.id_==str(id_).encode('ascii'),
-                          OrmPartition.vid==str(id_).encode('ascii')
+                          OrmPartition.id_==str(id_).encode('ascii').strip(),
+                          OrmPartition.vid==str(id_).encode('ascii').strip()
                          )))
-  
+
         try:
             orm_partition = q.one()
-          
-            return self.partition(orm_partition)
-        except NoResultFound:
+        except NoResultFound as e:
             orm_partition = None
-            
-        if not orm_partition:
-            q = (s.query(OrmPartition)
-             .filter(OrmPartition.name==id_.encode('ascii')))
 
-            try:
-                orm_partition = q.one()
-              
-                return self.partition(orm_partition)
-            except NoResultFound:
-                orm_partition = None
-            
-        return orm_partition
+        if orm_partition:
+            return self.partition(orm_partition)
+
+        q = (s.query(OrmPartition)
+         .filter(OrmPartition.name==id_.encode('ascii')))
+
+        try:
+            orm_partition = q.one()
+        except NoResultFound:
+            return None
+
+        return self.partition(orm_partition)
 
     def find_table(self, table_name):
         '''Return the first partition that has the given table name'''

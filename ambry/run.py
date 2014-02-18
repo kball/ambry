@@ -203,6 +203,13 @@ class RunConfig(object):
         
         return e
 
+    def defaults(self):
+        return self.group('defaults')
+
+    def default(self, name):
+        e = self.group_item('default', name)
+
+        return e
 
     def datarepo(self,name):
         e =  self.group_item('datarepo', name) 

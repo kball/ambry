@@ -124,6 +124,10 @@ class WarehouseInterface(object):
 
         bundle, p, tables = self._setup_install(p_vid)
 
+        if self.has(partition):
+            self.logger.warn("Skipping {}; Already in warehouse".format(p.identity.vname))
+            return
+
         if p.identity.format == 'db':
             self.install_partition(bundle, p)
             for table_name, urls in tables.items():
@@ -133,12 +137,15 @@ class WarehouseInterface(object):
                 else:
                     self.load_local(p, table_name)
 
+
         elif p.identity.format == 'geo':
             self.install_partition(bundle, p)
             for table_name, urls in tables.items():
                 self.load_ogr(p, table_name)
         else:
             self.logger.warn("Skipping {}; uninstallable format: {}".format(p.identity.vname, p.identity.format))
+
+        return p_vid
 
 
     def install_partition(self, bundle, partition):
@@ -216,8 +223,6 @@ class WarehouseInterface(object):
                     table_urls[table_name] = ri.get(rident.data['csv']['tables'][t.id_]['parts'])
                 except BadRequest:
                     table_urls[table_name] = None
-
-
 
             else:
                 table_urls[table_name] = None
@@ -315,14 +320,33 @@ class WarehouseInterface(object):
         raise NotImplementedError()
 
 
+    @property
     def info(self):
-        config = self.config.to_dict()
+        x = (("Class:    {}\n".format(self.__class__)) +
+             ("Database: {}\n".format(self.database.dsn)) +
+             ("WLibrary: {}\n".format(self.wlibrary.database.dsn)) +
+             ("ELibrary: {}\n".format(self.elibrary.database.dsn)))
 
-        if 'password' in config['database']: del config['database']['password']
-        return config
+        this = self
+
+        class _info(str):
+
+            @property
+            def list(self):
+                dsids = this.wlibrary.list(locations=None, key='fqname').values()
+
+                idents  =  sorted( [ ident for ds in dsids for ident in (ds.partitions.values()  if ds.partitions else [] ) ] +
+                                   [ ds for  ds in dsids],
+                                   key=lambda ident: ident.fqname  )
 
 
+                return "\n".join(
+                    "{:16s} {:6s} {:s} ".format(i.vid, i.locations, i.vname)
+                    for i in idents
+                )
 
+
+        return _info(x)
 
 class RestInterface(object):
 

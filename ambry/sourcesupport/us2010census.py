@@ -3,7 +3,8 @@ Created on Aug 19, 2012
 
 @author: eric
 '''
-from  ambry.bundle import BuildBundle
+from ambry.bundle.build import BuildBundle
+
 
 class Bundle(BuildBundle):
     '''

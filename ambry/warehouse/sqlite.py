@@ -47,6 +47,9 @@ class SqliteWarehouse(RelationalWarehouse):
                                               on_conflict='REPLACE',
                                               name=atch_name, conn=conn)
 
+        table = partition.get_table(table_name)
+        self.wlibrary.install_table(table.vid, dest_table_name)
+
         self.logger.info('done {}'.format(partition.identity.vname))
 
 
@@ -69,6 +72,9 @@ class SqliteWarehouse(RelationalWarehouse):
                 p.wait()
             except Exception as e:
                 self.logger.error("Failed to load: {} {}: {}".format(partition.identity.vname, table_name, e.message))
+
+        table = partition.get_table(table_name)
+        self.wlibrary.install_table(table.vid, a_table_name)
 
 
 class SpatialiteWarehouse(SqliteWarehouse):

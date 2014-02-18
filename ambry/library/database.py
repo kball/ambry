@@ -304,6 +304,9 @@ class LibraryDb(object):
                         dataset = ROOT_CONFIG_NAME,
                         creator=ROOT_CONFIG_NAME,
                         revision=1,
+                        tag='root',
+                        group='root',
+                        state='root'
                         )
             self.session.add(o)
             self.commit()
@@ -482,7 +485,6 @@ class LibraryDb(object):
         already exist if before installing again.
         """
 
-
         # There should be only one dataset record in the
         # bundle
         db = bundle.database
@@ -494,6 +496,7 @@ class LibraryDb(object):
         dataset = bdbs.query(Dataset).one()
 
         dataset.location = Dataset.LOCATION.LIBRARY
+        dataset.state = Dataset.STATE.INSTALLED
 
         s.merge(dataset)
 
@@ -502,10 +505,10 @@ class LibraryDb(object):
 
         s.query(Partition).filter(Partition.d_vid == dataset.vid).delete()
 
-        for table in dataset.tables:
-            s.query(Column).filter(Column.t_vid == table.vid).delete()
+        #for table in dataset.tables:
+        #    s.query(Column).filter(Column.t_vid == table.vid).delete()
 
-        s.query(Table).filter(Table.d_vid == dataset.vid).delete()
+        #s.query(Table).filter(Table.d_vid == dataset.vid).delete()
 
         try:
             self.commit()
@@ -561,7 +564,8 @@ class LibraryDb(object):
         the whole bundle"""
 
         from ..dbexceptions import NotFoundError
-        from ..identity import PartitionNameQuery
+        from sqlalchemy.orm.exc import NoResultFound
+
 
         try:
             b = self.get(bundle.identity.vid)
@@ -569,7 +573,7 @@ class LibraryDb(object):
             b = None
 
         if not b:
-            self.install_bundle(bundle)
+            self.install_dataset(bundle)
 
         partition = bundle.partitions.get(p_id)
 
