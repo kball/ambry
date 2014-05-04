@@ -38,29 +38,29 @@ fi
 # To deal with recent changes in clang.
 export ARCHFLAGS="-Wno-error=unused-command-line-argument-hard-error-in-future"
 
-echo "--- Installing packages with Macports"
+#echo "--- Installing packages with Macports"
 
 #port_packages="gdal spatialite-tools postgresql90 hdf5-18 spatialindex "
-port_packages="git-core gdal spatialite-tools postgresql90 hdf5-18 spatialindex "
-
-for pkg in $port_packages; do
-    sudo port install --no-rev-upgrade $pkg
-    if [ $? -ne 0 ]; then
-	    echo "ERROR: port package did not install: " $pkg
-	    exit 1
-    fi
-done
+##port_packages="git-core gdal spatialite-tools postgresql90 hdf5-18 spatialindex "
+#
+#for pkg in $port_packages; do
+#    sudo port install --no-rev-upgrade $pkg
+#    if [ $? -ne 0 ]; then
+#	    echo "ERROR: port package did not install: " $pkg
+#	    exit 1
+#    fi
+#done
 
 
 ##
 ## Install the python requirements
 ##
 
-sudo easy_install pip
+#sudo easy_install pip
 export PATH=$PATH:/opt/local/lib/postgresql90/bin/
-sudo ARCHFLAGS="-Wno-error=unused-command-line-argument-hard-error-in-future -arch i386 -arch x86_64" \
-     DYLD_LIBRARY_PATH=/opt/local/lib:/opt/local/lib/postgresql90 \
-     INCLUDE_PATH=/opt/local/include \
+#sudo #ARCHFLAGS="-Wno-error=unused-command-line-argument-hard-error-in-future -arch i386 -arch x86_64" \
+     #INCLUDE_PATH=/opt/local/include \
+sudo      DYLD_FALLBACK_LIBRARY_PATH=/opt/local/lib:/opt/local/lib/postgresql90 \
 pip install -r https://raw.githubusercontent.com/clarinova/ambry/master/requirements.txt
 
 
@@ -101,12 +101,12 @@ fi
 ## Actually install Ambry
 ##
 
-sudo easy_install pip
+#sudo easy_install pip
 
-sudo ARCHFLAGS="-Wno-error=unused-command-line-argument-hard-error-in-future -arch i386 -arch x86_64" \
-     DYLD_LIBRARY_PATH=/opt/local/lib:/opt/local/lib/postgresql90 \
-     INCLUDE_PATH=/opt/local/include \
-pip install -r https://raw.githubusercontent.com/clarinova/ambry/master/requirements.txt
+#sudo ARCHFLAGS="-Wno-error=unused-command-line-argument-hard-error-in-future -arch i386 -arch x86_64" \
+#     DYLD_LIBRARY_PATH=/opt/local/lib:/opt/local/lib/postgresql90 \
+#     INCLUDE_PATH=/opt/local/include \
+#pip install -r https://raw.githubusercontent.com/clarinova/ambry/master/requirements.txt
 
 sudo mkdir -p /data/src
 sudo mkdir -p /data/source
